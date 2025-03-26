@@ -1,8 +1,10 @@
 {
-  "name": "Wordle6",
+  "name": "wordle6",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
@@ -10,6 +12,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
+    "eslint": "^9.23.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^16.0.0",
+    "tsx": "^4.7.1",
+    "typescript-eslint": "^8.28.0"
   }
 }
