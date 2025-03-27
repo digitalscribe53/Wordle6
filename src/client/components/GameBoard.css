@@ -1,0 +1,49 @@
+.game-board {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 20px 0;
+  }
+  
+  .row {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .cell {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border: 2px solid #d3d6da;
+    text-transform: uppercase;
+  }
+  
+  .cell.empty {
+    background-color: white;
+  }
+  
+  .cell.filled {
+    border-color: #878a8c;
+  }
+  
+  .cell.correct {
+    background-color: #6aaa64;
+    color: white;
+    border-color: #6aaa64;
+  }
+  
+  .cell.present {
+    background-color: #c9b458;
+    color: white;
+    border-color: #c9b458;
+  }
+  
+  .cell.absent {
+    background-color: #787c7e;
+    color: white;
+    border-color: #787c7e;
+  }
