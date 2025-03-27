@@ -2,12 +2,18 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin: 20px 0;
+    margin: 20px auto;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 350px; /* Adjust based on your cell size */
   }
   
   .row {
     display: flex;
     gap: 5px;
+    justify-content: center;
+    width: 100%;
   }
   
   .cell {
@@ -46,4 +52,17 @@
     background-color: #787c7e;
     color: white;
     border-color: #787c7e;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 400px) {
+    .cell {
+      width: 45px;
+      height: 45px;
+      font-size: 1.5rem;
+    }
+    
+    .game-board {
+      max-width: 300px;
+    }
   }
