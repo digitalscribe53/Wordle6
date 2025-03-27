@@ -2,7 +2,7 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { serveStatic } from '@hono/node-server/serve-static';
-import { getRandomWord, isValidWord } from './services/wordService.ts';
+import { getRandomWord, isValidWord } from './services/wordService';
 
 const app = new Hono();
 
