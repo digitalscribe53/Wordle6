@@ -4,11 +4,14 @@
     margin: 0 auto;
     padding: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   
   header h1 {
     font-size: 2.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   
   .six {
@@ -36,4 +39,61 @@
   
   .error button:hover {
     background-color: #4e8452;
+  }
+  
+  .loading {
+    font-size: 1.2rem;
+    margin: 50px 0;
+    color: #555;
+  }
+  
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin: 10px 0;
+  }
+  
+  .message {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .win {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .lose {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .message button {
+    background-color: #6aaa64;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .message button:hover {
+    background-color: #4e8452;
+  }
+  
+  /* Animation for error shake */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+  
+  .shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
   }

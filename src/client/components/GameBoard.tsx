@@ -1,5 +1,6 @@
 import React from 'react';
 import './GameBoard.css';
+import { checkWord, LetterStatus } from '../utils/wordUtils.js';
 
 interface GameBoardProps {
   guesses: string[];
@@ -21,25 +22,13 @@ const GameBoard: React.FC<GameBoardProps> = ({
   
   // Add submitted guesses
   for (let i = 0; i < guesses.length; i++) {
-    const rowCells = [];
     const guess = guesses[i];
-    
-    for (let j = 0; j < wordLength; j++) {
-      const letter = guess[j];
-      let cellStatus = 'absent';
-      
-      if (letter === targetWord[j]) {
-        cellStatus = 'correct';
-      } else if (targetWord.includes(letter)) {
-        cellStatus = 'present';
-      }
-      
-      rowCells.push(
-        <div key={j} className={`cell ${cellStatus}`}>
-          {letter}
-        </div>
-      );
-    }
+    const result = checkWord(guess, targetWord);
+    const rowCells = result.letters.map((letterResult, j) => (
+      <div key={j} className={`cell ${letterResult.status}`}>
+        {letterResult.letter}
+      </div>
+    ));
     
     rows.push(<div key={i} className="row">{rowCells}</div>);
   }
