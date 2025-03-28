@@ -2,21 +2,7 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
-
-// We'll create a word service soon, but for now let's define the functions here
-const sixLetterWords = [
-  'PUZZLE', 'OXYGEN', 'ZOMBIE', 'QUARTZ', 'RHYTHM', 
-  'JACKET', 'WALNUT', 'FLIGHT', 'COPPER', 'DINNER'
-];
-
-const getRandomWord = () => {
-  const randomIndex = Math.floor(Math.random() * sixLetterWords.length);
-  return sixLetterWords[randomIndex];
-};
-
-const isValidWord = (word: string) => {
-  return sixLetterWords.includes(word.toUpperCase());
-};
+import { getRandomWord, isValidWord } from './data/words.js';
 
 const app = new Hono();
 
@@ -44,13 +30,20 @@ app.get('/api/word', (c) => {
 });
 
 app.post('/api/validate', async (c) => {
-  const { word } = await c.req.json();
-  
-  if (!word || typeof word !== 'string') {
-    return c.json({ valid: false, error: 'Invalid input' }, 400);
+  try {
+    const body = await c.req.json();
+    const word = body.word;
+    
+    if (!word || typeof word !== 'string') {
+      return c.json({ valid: false, error: 'Invalid input' }, 400);
+    }
+    
+    // Check if the word is in our dictionary
+    return c.json({ valid: isValidWord(word) });
+  } catch (error) {
+    console.error('Error validating word:', error);
+    return c.json({ valid: false, error: 'Server error' }, 500);
   }
-  
-  return c.json({ valid: isValidWord(word) });
 });
 
 // Serve static files from the public directory
