@@ -3,6 +3,7 @@ import './Header.css';
 
 interface HeaderProps {
   resetGame: () => void;
+  showStats: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ resetGame }) => {
