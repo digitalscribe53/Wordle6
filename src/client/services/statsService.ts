@@ -62,12 +62,7 @@ export interface GameStats {
     const stats = loadStats();
     const today = new Date().toDateString();
   
-    // Don't update stats if the game was already completed today
-    if (stats.lastCompleted === today) {
-      return stats;
-    }
-  
-    // Update general stats
+    // Update general stats - no longer checking lastCompleted
     stats.gamesPlayed += 1;
     
     if (won) {
@@ -85,7 +80,7 @@ export interface GameStats {
       stats.currentStreak = 0;
     }
   
-    // Mark as completed for today
+    // Record the last completed date (for daily challenges if implemented later)
     stats.lastCompleted = today;
     
     // Save the updated stats
