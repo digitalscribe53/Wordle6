@@ -3,6 +3,8 @@ import './App.css';
 import GameBoard from './components/GameBoard.js';
 import Keyboard from './components/Keyboard.js';
 import Header from './components/Header.js';
+import StatsModal from './components/StatsModal.js';
+import { GameStats, loadStats, updateStats } from './services/statsService.js';
 
 // Game constants
 const WORD_LENGTH = 6;  // For Wordle6, we use 6-letter words
@@ -17,12 +19,20 @@ function App() {
   const [error, setError] = useState<string>('');
   const [shake, setShake] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  // Stats state
+  const [stats, setStats] = useState<GameStats>(loadStats());
+  const [showStatsModal, setShowStatsModal] = useState<boolean>(false);
 
   // Fetch a random word from the server
   const fetchWord = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
+      
+      // Add a small delay to allow the server to start up
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       const response = await fetch('/api/word');
       
       if (!response.ok) {
@@ -111,11 +121,21 @@ function App() {
     setCurrentGuess('');
     setError('');
 
-    // Check for win or loss
+  // Check for win or loss
     if (currentGuess.toUpperCase() === targetWord.toUpperCase()) {
       setGameStatus('won');
+      // Update stats with a win and the number of guesses
+      const updatedStats = updateStats(true, newGuesses.length);
+      setStats(updatedStats);
+      // Show stats modal after winning
+      setTimeout(() => setShowStatsModal(true), 1500);
     } else if (newGuesses.length >= MAX_GUESSES) {
       setGameStatus('lost');
+      // Update stats with a loss
+      const updatedStats = updateStats(false);
+      setStats(updatedStats);
+      // Show stats modal after losing
+      setTimeout(() => setShowStatsModal(true), 1500);
     }
   };
 
@@ -125,12 +145,18 @@ function App() {
     setCurrentGuess('');
     setGameStatus('playing');
     setError('');
+    setShowStatsModal(false);
     fetchWord();
+  };
+  
+  // Toggle stats modal
+  const toggleStatsModal = () => {
+    setShowStatsModal(!showStatsModal);
   };
 
   return (
     <div className="app">
-      <Header resetGame={resetGame} />
+      <Header resetGame={resetGame} showStats={toggleStatsModal} />
       
       {isLoading ? (
         <div className="loading">Loading game...</div>
@@ -165,6 +191,13 @@ function App() {
               <button onClick={resetGame}>Play Again</button>
             </div>
           )}
+          
+          <StatsModal
+            stats={stats}
+            isOpen={showStatsModal}
+            onClose={toggleStatsModal}
+            onPlayAgain={resetGame}
+          />
         </>
       )}
     </div>
