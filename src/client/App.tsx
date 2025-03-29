@@ -152,19 +152,25 @@ function App() {
 
     // Check for win or loss
     if (currentGuess.toUpperCase() === targetWord.toUpperCase()) {
-      setGameStatus('won');
-      // Update stats with a win and the number of guesses
-      const updatedStats = updateStats(true, newGuesses.length);
-      setStats(updatedStats);
-      // Show stats modal after winning
-      setTimeout(() => setShowStatsModal(true), 1500);
+      // Delay the game status update slightly to allow for animations
+      setTimeout(() => {
+        setGameStatus('won');
+        // Update stats with a win and the number of guesses
+        const updatedStats = updateStats(true, newGuesses.length);
+        setStats(updatedStats);
+        // Show stats modal after winning (after animations)
+        setTimeout(() => setShowStatsModal(true), 2000);
+      }, 1500); // This allows time for the flip animations to complete
     } else if (newGuesses.length >= MAX_GUESSES) {
-      setGameStatus('lost');
-      // Update stats with a loss
-      const updatedStats = updateStats(false);
-      setStats(updatedStats);
-      // Show stats modal after losing
-      setTimeout(() => setShowStatsModal(true), 1500);
+      // Delay the game status update slightly
+      setTimeout(() => {
+        setGameStatus('lost');
+        // Update stats with a loss
+        const updatedStats = updateStats(false);
+        setStats(updatedStats);
+        // Show stats modal after losing
+        setTimeout(() => setShowStatsModal(true), 1000);
+      }, 1500); // This allows time for the flip animations to complete
     }
   };
 

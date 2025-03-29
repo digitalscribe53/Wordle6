@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './GameBoard.css';
 import { checkWord, LetterStatus } from '../utils/wordUtils.js';
 
@@ -17,6 +17,27 @@ const GameBoard: React.FC<GameBoardProps> = ({
   wordLength, 
   maxGuesses 
 }) => {
+  // State to track which row has just been submitted (for animations)
+  const [lastSubmittedRow, setLastSubmittedRow] = useState<number>(-1);
+  // State to track if the win animation should be shown
+  const [showWinAnimation, setShowWinAnimation] = useState<boolean>(false);
+
+  // Update lastSubmittedRow when a new guess is added
+  useEffect(() => {
+    if (guesses.length > 0) {
+      setLastSubmittedRow(guesses.length - 1);
+      
+      // Check if the last guess was correct
+      const lastGuess = guesses[guesses.length - 1];
+      if (lastGuess.toUpperCase() === targetWord.toUpperCase()) {
+        // Delay win animation until after flip animation
+        setTimeout(() => {
+          setShowWinAnimation(true);
+        }, 1500); // Wait longer than all flip animations
+      }
+    }
+  }, [guesses.length, guesses, targetWord]);
+
   // Create rows for previous guesses
   const rows = [];
   
@@ -24,13 +45,29 @@ const GameBoard: React.FC<GameBoardProps> = ({
   for (let i = 0; i < guesses.length; i++) {
     const guess = guesses[i];
     const result = checkWord(guess, targetWord);
+    
+    // Check if this row should show the win animation
+    const isWinningRow = i === guesses.length - 1 && 
+                         guess.toUpperCase() === targetWord.toUpperCase() && 
+                         showWinAnimation;
+    
     const rowCells = result.letters.map((letterResult, j) => (
-      <div key={j} className={`cell ${letterResult.status}`}>
+      <div 
+        key={j} 
+        className={`cell ${letterResult.status} ${i === lastSubmittedRow ? 'flip' : ''}`}
+      >
         {letterResult.letter}
       </div>
     ));
     
-    rows.push(<div key={i} className="row">{rowCells}</div>);
+    rows.push(
+      <div 
+        key={i} 
+        className={`row ${isWinningRow ? 'win-animation' : ''}`}
+      >
+        {rowCells}
+      </div>
+    );
   }
   
   // Add current guess
@@ -40,7 +77,10 @@ const GameBoard: React.FC<GameBoardProps> = ({
     // Fill in the letters that have been typed
     for (let i = 0; i < wordLength; i++) {
       currentGuessRow.push(
-        <div key={i} className={`cell ${i < currentGuess.length ? 'filled' : 'empty'}`}>
+        <div 
+          key={i} 
+          className={`cell ${i < currentGuess.length ? 'filled' : 'empty'}`}
+        >
           {i < currentGuess.length ? currentGuess[i] : ''}
         </div>
       );
