@@ -3,8 +3,9 @@ import './App.css';
 import GameBoard from './components/GameBoard.js';
 import Keyboard from './components/Keyboard.js';
 import Header from './components/Header.js';
-import StatsModal from './components/StatsModal.js';
+import StatsModal from './components/StatsModal.jsx';
 import { GameStats, loadStats, updateStats } from './services/statsService.js';
+import { SavedGameState, saveGameState, loadGameState, clearGameState, isGameStateValid } from './services/gameStorage.js';
 
 // Game constants
 const WORD_LENGTH = 6;  // For Wordle6, we use 6-letter words
@@ -49,10 +50,38 @@ function App() {
     }
   }, []);
 
-  // Initialize game
+  // Initialize game - check for saved game state first
   useEffect(() => {
-    fetchWord();
+    const savedState = loadGameState();
+    
+    // If there's a saved game and it's still valid, restore it
+    if (savedState && isGameStateValid(savedState)) {
+      setTargetWord(savedState.targetWord);
+      setGuesses(savedState.guesses);
+      setCurrentGuess(savedState.currentGuess);
+      setGameStatus(savedState.gameStatus);
+      setIsLoading(false);
+    } else {
+      // Otherwise fetch a new word
+      fetchWord();
+    }
   }, [fetchWord]);
+  
+  // Save game state whenever it changes
+  useEffect(() => {
+    // Only save once the game is loaded and we have a target word
+    if (!isLoading && targetWord) {
+      const gameState: SavedGameState = {
+        targetWord,
+        guesses,
+        currentGuess,
+        gameStatus,
+        lastUpdated: Date.now()
+      };
+      
+      saveGameState(gameState);
+    }
+  }, [isLoading, targetWord, guesses, currentGuess, gameStatus]);
 
   // Handle keyboard input
   const handleKeyPress = useCallback((key: string) => {
@@ -121,7 +150,7 @@ function App() {
     setCurrentGuess('');
     setError('');
 
-  // Check for win or loss
+    // Check for win or loss
     if (currentGuess.toUpperCase() === targetWord.toUpperCase()) {
       setGameStatus('won');
       // Update stats with a win and the number of guesses
@@ -146,6 +175,9 @@ function App() {
     setGameStatus('playing');
     setError('');
     setShowStatsModal(false);
+    // Clear the saved game state
+    clearGameState();
+    // Fetch a new word
     fetchWord();
   };
   
