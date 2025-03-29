@@ -136,15 +136,24 @@ function App() {
       if (!data.valid) {
         setError(`${currentGuess} is not in the word list`);
         setShake(true);
-        setTimeout(() => setShake(false), 500);
-        return;
+        
+        // Display the error and shake animation
+        setTimeout(() => {
+          setShake(false);
+          // Clear the invalid guess after the shake animation
+          setCurrentGuess('');
+        }, 1000);
+        
+        return; // Exit early without adding the guess
       }
     } catch (error) {
       console.error('Error validating word:', error);
-      // If validation fails, we'll still accept the word for now
+      // If validation server error, show message but allow continuing
+      setError('Error validating word. Proceeding anyway.');
+      setTimeout(() => setError(''), 2000);
     }
 
-    // Add the guess to the list
+    // Add the guess to the list (only if valid)
     const newGuesses = [...guesses, currentGuess];
     setGuesses(newGuesses);
     setCurrentGuess('');
