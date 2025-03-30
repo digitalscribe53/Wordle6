@@ -1,0 +1,29 @@
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .theme-toggle:hover {
+    background-color: var(--key-bg-hover);
+  }
+  
+  .theme-toggle:active {
+    transform: scale(0.9);
+  }
+  
+  .theme-toggle svg {
+    transition: transform 0.5s ease;
+  }
+  
+  .theme-toggle:hover svg {
+    transform: rotate(15deg);
+  }
