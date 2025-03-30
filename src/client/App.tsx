@@ -1,3 +1,5 @@
+// App.tsx - Updated to use client-side word handling
+
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard.js';
@@ -9,11 +11,15 @@ import PWAInstallPrompt from './components/PWAInstallPrompt.js';
 import NetworkStatus from './components/NetworkStatus.js';
 import { GameStats, loadStats, updateStats } from './services/statsService.js';
 import { SavedGameState, saveGameState, loadGameState, clearGameState, isGameStateValid } from './services/gameStorage.js';
+import { getRandomWord, isValidWord } from './services/wordService.js';
 import { ThemeProvider } from './context/ThemeContext.js';
 
 // Game constants
 const WORD_LENGTH = 6;  // For Wordle6, we use 6-letter words
 const MAX_GUESSES = 6;  // Players get 6 attempts
+
+// Fallback words in case word service fails
+const FALLBACK_WORDS = ["PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM", "JACKET"];
 
 function App() {
   // Game state
@@ -29,26 +35,33 @@ function App() {
   const [stats, setStats] = useState<GameStats>(loadStats());
   const [showStatsModal, setShowStatsModal] = useState<boolean>(false);
 
-  // Fetch a random word from the server
+  // Fetch a random word using the client-side word service
   const fetchWord = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
       
-      // Add a small delay to allow the server to start up
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const response = await fetch('/api/word');
-      
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+      try {
+        // Use client-side word service instead of API
+        const word = await getRandomWord();
+        if (word) {
+          setTargetWord(word.toUpperCase());
+        } else {
+          // Use fallback if no word returned
+          const fallbackWord = FALLBACK_WORDS[Math.floor(Math.random() * FALLBACK_WORDS.length)];
+          setTargetWord(fallbackWord);
+          console.warn('Using fallback word');
+        }
+      } catch (error) {
+        console.error('Error getting random word:', error);
+        // Fallback to a default word
+        const fallbackWord = FALLBACK_WORDS[Math.floor(Math.random() * FALLBACK_WORDS.length)];
+        setTargetWord(fallbackWord);
       }
-      
-      const data = await response.json();
-      setTargetWord(data.word.toUpperCase());
     } catch (error) {
-      console.error('Error fetching word:', error);
-      setError('Failed to connect to the game server. Please try again.');
+      console.error('Error in fetchWord:', error);
+      setError('Failed to load a word. Using default word instead.');
+      setTargetWord('PUZZLE'); // Ensure we always have a word
     } finally {
       setIsLoading(false);
     }
@@ -127,37 +140,25 @@ function App() {
       return;
     }
 
-    // Validate the word against our dictionary
+    // Validate the word using client-side validation
     try {
-      const response = await fetch('/api/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: currentGuess })
-      });
-
-      const data = await response.json();
-
-      if (!data.valid) {
+      const valid = await isValidWord(currentGuess);
+      
+      if (!valid) {
         setError(`${currentGuess} is not in the word list`);
         setShake(true);
-        
-        // Display the error and shake animation
         setTimeout(() => {
           setShake(false);
-          // Clear the invalid guess after the shake animation
-          setCurrentGuess('');
+          setCurrentGuess(''); // Clear invalid guess after animation
         }, 1000);
-        
-        return; // Exit early without adding the guess
+        return;
       }
     } catch (error) {
       console.error('Error validating word:', error);
-      // If validation server error, show message but allow continuing
-      setError('Error validating word. Proceeding anyway.');
-      setTimeout(() => setError(''), 2000);
+      // If validation fails, we'll still accept the word for now
     }
 
-    // Add the guess to the list (only if valid)
+    // Add the guess to the list
     const newGuesses = [...guesses, currentGuess];
     setGuesses(newGuesses);
     setCurrentGuess('');

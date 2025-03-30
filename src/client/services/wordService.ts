@@ -1,8 +1,7 @@
-// src/client/services/wordService.js
-// A client-side word service with embedded fallback words
+// src/client/services/wordService.ts
 
 // Embedded fallback word list in case words.json can't be loaded
-const FALLBACK_WORDS = [
+const FALLBACK_WORDS: string[] = [
     "PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM", 
     "JACKET", "WALNUT", "FLIGHT", "COPPER", "DINNER",
     "TICKET", "SINGER", "JUNGLE", "SHIELD", "KNIGHT",
@@ -10,12 +9,12 @@ const FALLBACK_WORDS = [
   ];
   
   // Cache the word list once it's loaded
-  let wordList = null;
+  let wordList: string[] | null = null;
   
   /**
    * Loads the word list from the JSON file or uses fallback
    */
-  export const loadWordList = async () => {
+  export const loadWordList = async (): Promise<string[]> => {
     if (wordList) return wordList;
     
     try {
@@ -46,7 +45,7 @@ const FALLBACK_WORDS = [
   /**
    * Get a random word from the list
    */
-  export const getRandomWord = async () => {
+  export const getRandomWord = async (): Promise<string> => {
     const words = await loadWordList();
     const randomIndex = Math.floor(Math.random() * words.length);
     return words[randomIndex];
@@ -55,7 +54,7 @@ const FALLBACK_WORDS = [
   /**
    * Check if a word is valid (exists in our word list)
    */
-  export const isValidWord = async (word) => {
+  export const isValidWord = async (word: string): Promise<boolean> => {
     const words = await loadWordList();
     return words.includes(word.trim().toUpperCase());
   };
