@@ -11,7 +11,8 @@
       "build:client": "vite build",
       "build:server": "tsc -p tsconfig.json",
       "build": "npm run build:client && npm run build:server",
-      "start": "node dist/server/index.js"
+      "start": "node dist/server/index.js",
+      "build:netlify": "npm run build:client"
     },
     "dependencies": {
       "hono": "^3.11.0",
