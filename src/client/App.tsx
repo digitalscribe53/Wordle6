@@ -4,6 +4,7 @@ import GameBoard from './components/GameBoard.js';
 import Keyboard from './components/Keyboard.js';
 import Header from './components/Header.js';
 import StatsModal from './components/StatsModal.jsx';
+import GameStatusAnnouncer from './components/GameStatusAnnouncer.js';
 import { GameStats, loadStats, updateStats } from './services/statsService.js';
 import { SavedGameState, saveGameState, loadGameState, clearGameState, isGameStateValid } from './services/gameStorage.js';
 import { ThemeProvider } from './context/ThemeContext.js';
@@ -207,8 +208,18 @@ function App() {
       <div className="app">
         <Header resetGame={resetGame} showStats={toggleStatsModal} />
         
+        {/* Main title for screen readers */}
+        <h1 className="sr-only">Wordle6 - A 6-letter word guessing game</h1>
+        
+        {/* Game status announcer for screen readers */}
+        <GameStatusAnnouncer 
+          gameStatus={gameStatus} 
+          targetWord={targetWord}
+          guessCount={guesses.length}
+        />
+        
         {isLoading ? (
-          <div className="loading">Loading game...</div>
+          <div className="loading" aria-live="polite">Loading game...</div>
         ) : (
           <>
             <GameBoard 
@@ -219,7 +230,7 @@ function App() {
               maxGuesses={MAX_GUESSES}
             />
             
-            {error && <div className={`error-message ${shake ? 'shake' : ''}`}>{error}</div>}
+            {error && <div className={`error-message ${shake ? 'shake' : ''}`} aria-live="assertive">{error}</div>}
             
             <Keyboard 
               onKeyPress={handleKeyPress} 
@@ -228,14 +239,14 @@ function App() {
             />
             
             {gameStatus === 'won' && (
-              <div className="message win">
+              <div className="message win" role="alert" aria-live="polite">
                 <p>Congratulations! You won!</p>
                 <button onClick={resetGame}>Play Again</button>
               </div>
             )}
             
             {gameStatus === 'lost' && (
-              <div className="message lose">
+              <div className="message lose" role="alert" aria-live="polite">
                 <p>Game over! The word was <strong>{targetWord}</strong></p>
                 <button onClick={resetGame}>Play Again</button>
               </div>

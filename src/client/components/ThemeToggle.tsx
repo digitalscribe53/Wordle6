@@ -1,14 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { ThemeContext } from '../context/ThemeContext.js';
 import './ThemeToggle.css';
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle click with blur to remove focus
+  const handleToggleClick = () => {
+    toggleTheme();
+    // Remove focus from the button after toggling
+    if (buttonRef.current) {
+      buttonRef.current.blur();
+    }
+  };
 
   return (
     <button 
+      ref={buttonRef}
       className="theme-toggle" 
-      onClick={toggleTheme} 
+      onClick={handleToggleClick}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? (
