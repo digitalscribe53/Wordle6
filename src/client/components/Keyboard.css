@@ -16,11 +16,18 @@
     padding: 0 10px;
     border-radius: 4px;
     border: none;
-    background-color: #d3d6da;
+    background-color: var(--key-bg);
+    color: var(--text-color);
     font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
+    transition: all 0.1s ease, background-color 0.3s, color 0.3s;
+  }
+  
+  .key:active {
+    transform: scale(0.95);
+    opacity: 0.9;
   }
   
   .key.special-key {
@@ -29,20 +36,37 @@
   }
   
   .key:hover {
-    opacity: 0.9;
+    background-color: var(--key-bg-hover);
   }
   
   .key.correct {
-    background-color: #6aaa64;
+    background-color: var(--cell-correct-bg);
     color: white;
   }
   
   .key.present {
-    background-color: #c9b458;
+    background-color: var(--cell-present-bg);
     color: white;
   }
   
   .key.absent {
-    background-color: #787c7e;
+    background-color: var(--cell-absent-bg);
     color: white;
+  }
+  
+  /* Key press animation */
+  @keyframes key-press {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .key-pressed {
+    animation: key-press 0.1s ease-in-out;
   }

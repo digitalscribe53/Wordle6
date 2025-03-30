@@ -4,36 +4,63 @@
     padding: 0;
   }
   
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    color: #212529;
-  }
-  
   :root {
-    --color-correct: #6aaa64;
-    --color-present: #c9b458;
-    --color-absent: #787c7e;
-    --color-background: #ffffff;
-    --color-border: #d3d6da;
+    /* Light theme (default) */
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --border-color: #d3d6da;
+    --cell-empty-bg: #ffffff;
+    --cell-filled-border: #878a8c;
+    --cell-correct-bg: #6aaa64;
+    --cell-present-bg: #c9b458;
+    --cell-absent-bg: #787c7e;
+    --key-bg: #d3d6da;
+    --key-bg-hover: #c1c4c7;
+    --error-bg: #f8d7da;
+    --error-color: #721c24;
+    --win-message-bg: #d4edda;
+    --win-message-color: #155724;
+    --lose-message-bg: #f8d7da;
+    --lose-message-color: #721c24;
+    --modal-overlay: rgba(0, 0, 0, 0.5);
+    --modal-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --button-primary: #4caf50;
+    --button-primary-hover: #388e3c;
+    --button-secondary: #4a90e2;
+    --button-secondary-hover: #3a7bc8;
   }
   
-  /* Responsive adjustments */
-  @media (max-width: 500px) {
-    .cell {
-      width: 40px;
-      height: 40px;
-      font-size: 1.5rem;
-    }
-    
-    .key {
-      height: 48px;
-      min-width: 25px;
-      font-size: 0.8rem;
-    }
-    
-    .key.special-key {
-      min-width: 55px;
-      font-size: 0.7rem;
-    }
+  [data-theme="dark"] {
+    /* Dark theme */
+    --bg-color: #121213;
+    --text-color: #d7dadc;
+    --border-color: #3a3a3c;
+    --cell-empty-bg: #121213;
+    --cell-filled-border: #565758;
+    --cell-correct-bg: #538d4e;
+    --cell-present-bg: #b59f3b;
+    --cell-absent-bg: #3a3a3c;
+    --key-bg: #818384;
+    --key-bg-hover: #565758;
+    --error-bg: #3a2a2c;
+    --error-color: #e57373;
+    --win-message-bg: #214c35;
+    --win-message-color: #a5d6a7;
+    --lose-message-bg: #3a2a2c;
+    --lose-message-color: #e57373;
+    --modal-overlay: rgba(0, 0, 0, 0.7);
+    --modal-bg: #2c2c2c;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --button-primary: #388e3c;
+    --button-primary-hover: #2e7d32;
+    --button-secondary: #3a7bc8;
+    --button-secondary-hover: #2a5a9f;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
   }

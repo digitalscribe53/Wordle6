@@ -6,6 +6,7 @@ import Header from './components/Header.js';
 import StatsModal from './components/StatsModal.jsx';
 import { GameStats, loadStats, updateStats } from './services/statsService.js';
 import { SavedGameState, saveGameState, loadGameState, clearGameState, isGameStateValid } from './services/gameStorage.js';
+import { ThemeProvider } from './context/ThemeContext.js';
 
 // Game constants
 const WORD_LENGTH = 6;  // For Wordle6, we use 6-letter words
@@ -202,52 +203,54 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <Header resetGame={resetGame} showStats={toggleStatsModal} />
-      
-      {isLoading ? (
-        <div className="loading">Loading game...</div>
-      ) : (
-        <>
-          <GameBoard 
-            guesses={guesses} 
-            currentGuess={currentGuess} 
-            targetWord={targetWord} 
-            wordLength={WORD_LENGTH}
-            maxGuesses={MAX_GUESSES}
-          />
-          
-          {error && <div className={`error-message ${shake ? 'shake' : ''}`}>{error}</div>}
-          
-          <Keyboard 
-            onKeyPress={handleKeyPress} 
-            guesses={guesses} 
-            targetWord={targetWord}
-          />
-          
-          {gameStatus === 'won' && (
-            <div className="message win">
-              <p>Congratulations! You won!</p>
-              <button onClick={resetGame}>Play Again</button>
-            </div>
-          )}
-          
-          {gameStatus === 'lost' && (
-            <div className="message lose">
-              <p>Game over! The word was <strong>{targetWord}</strong></p>
-              <button onClick={resetGame}>Play Again</button>
-            </div>
-          )}
-          
-          <StatsModal
-            stats={stats}
-            isOpen={showStatsModal}
-            onClose={toggleStatsModal}
-            onPlayAgain={resetGame}
-          />
-        </>
-      )}
-    </div>
+    <ThemeProvider>
+      <div className="app">
+        <Header resetGame={resetGame} showStats={toggleStatsModal} />
+        
+        {isLoading ? (
+          <div className="loading">Loading game...</div>
+        ) : (
+          <>
+            <GameBoard 
+              guesses={guesses} 
+              currentGuess={currentGuess} 
+              targetWord={targetWord} 
+              wordLength={WORD_LENGTH}
+              maxGuesses={MAX_GUESSES}
+            />
+            
+            {error && <div className={`error-message ${shake ? 'shake' : ''}`}>{error}</div>}
+            
+            <Keyboard 
+              onKeyPress={handleKeyPress} 
+              guesses={guesses} 
+              targetWord={targetWord}
+            />
+            
+            {gameStatus === 'won' && (
+              <div className="message win">
+                <p>Congratulations! You won!</p>
+                <button onClick={resetGame}>Play Again</button>
+              </div>
+            )}
+            
+            {gameStatus === 'lost' && (
+              <div className="message lose">
+                <p>Game over! The word was <strong>{targetWord}</strong></p>
+                <button onClick={resetGame}>Play Again</button>
+              </div>
+            )}
+            
+            <StatsModal
+              stats={stats}
+              isOpen={showStatsModal}
+              onClose={toggleStatsModal}
+              onPlayAgain={resetGame}
+            />
+          </>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

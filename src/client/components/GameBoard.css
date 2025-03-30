@@ -6,7 +6,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 350px; /* Adjust based on your cell size */
+    max-width: 350px; /* Adjust based on cell size */
   }
   
   .row {
@@ -24,36 +24,36 @@
     align-items: center;
     font-size: 2rem;
     font-weight: bold;
-    border: 2px solid #d3d6da;
+    border: 2px solid var(--border-color);
     text-transform: uppercase;
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.1s ease-in-out, background-color 0.3s, color 0.3s, border-color 0.3s;
   }
   
   .cell.empty {
-    background-color: white;
+    background-color: var(--cell-empty-bg);
   }
   
   .cell.filled {
-    border-color: #878a8c;
+    border-color: var(--cell-filled-border);
     animation: scale-up 0.15s ease-in-out forwards;
   }
   
   .cell.correct {
-    background-color: #6aaa64;
+    background-color: var(--cell-correct-bg);
     color: white;
-    border-color: #6aaa64;
+    border-color: var(--cell-correct-bg);
   }
   
   .cell.present {
-    background-color: #c9b458;
+    background-color: var(--cell-present-bg);
     color: white;
-    border-color: #c9b458;
+    border-color: var(--cell-present-bg);
   }
   
   .cell.absent {
-    background-color: #787c7e;
+    background-color: var(--cell-absent-bg);
     color: white;
-    border-color: #787c7e;
+    border-color: var(--cell-absent-bg);
   }
   
   /* Tile flip animation */
@@ -103,9 +103,9 @@
     }
     50% {
       transform: rotateX(90deg);
-      background-color: #d3d6da;
-      border-color: #d3d6da;
-      color: black;
+      background-color: var(--border-color);
+      border-color: var(--border-color);
+      color: var(--text-color);
     }
     100% {
       transform: rotateX(0deg);

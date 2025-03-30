@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './Header.css';
+import ThemeToggle from './ThemeToggle.js';
 
 interface HeaderProps {
   resetGame: () => void;
   showStats: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ resetGame }) => {
+const Header: React.FC<HeaderProps> = ({ resetGame, showStats }) => {
   const [showRules, setShowRules] = useState<boolean>(false);
 
   return (
@@ -22,11 +23,20 @@ const Header: React.FC<HeaderProps> = ({ resetGame }) => {
         </button>
         
         <button 
+          className="stats-button" 
+          onClick={showStats}
+        >
+          Stats
+        </button>
+        
+        <button 
           className="new-game-button" 
           onClick={resetGame}
         >
           New Game
         </button>
+        
+        <ThemeToggle />
       </div>
       
       {showRules && (
