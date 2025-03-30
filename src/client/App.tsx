@@ -39,19 +39,16 @@ function App() {
       // Add a small delay to simulate loading
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      try {
-        // Use client-side word service instead of API
-        const word = await getRandomWord();
-        setTargetWord(word.toUpperCase());
-      } catch (error) {
-        console.error('Error getting random word:', error);
-        // Use a fallback word
-        setTargetWord('PUZZLE');
-      }
+      // Use client-side word service
+      const word = await getRandomWord();
+      console.log("Random word received:", word);
+      setTargetWord(word.toUpperCase());
     } catch (error) {
-      console.error('Error fetching word:', error);
-      setError('Failed to load a word. Using default word.');
+      console.error('Error getting random word:', error);
+      // Use a fallback word
       setTargetWord('PUZZLE');
+      console.log("Using fallback word: PUZZLE");
+      setError('Failed to load a word. Using default word.');
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +57,8 @@ function App() {
   // Initialize game - check for saved game state first
   useEffect(() => {
     const savedState = loadGameState();
+
+    console.log("Game initialization started");
     
     // If there's a saved game and it's still valid, restore it
     if (savedState && isGameStateValid(savedState)) {
@@ -68,6 +67,7 @@ function App() {
       setCurrentGuess(savedState.currentGuess);
       setGameStatus(savedState.gameStatus);
       setIsLoading(false);
+      console.log("Game loaded from saved state, target word:", savedState.targetWord);
     } else {
       // Otherwise fetch a new word
       fetchWord();
