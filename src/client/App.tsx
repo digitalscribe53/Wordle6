@@ -5,6 +5,8 @@ import Keyboard from './components/Keyboard.js';
 import Header from './components/Header.js';
 import StatsModal from './components/StatsModal.jsx';
 import GameStatusAnnouncer from './components/GameStatusAnnouncer.js';
+import PWAInstallPrompt from './components/PWAInstallPrompt.js';
+import NetworkStatus from './components/NetworkStatus.js';
 import { GameStats, loadStats, updateStats } from './services/statsService.js';
 import { SavedGameState, saveGameState, loadGameState, clearGameState, isGameStateValid } from './services/gameStorage.js';
 import { ThemeProvider } from './context/ThemeContext.js';
@@ -211,6 +213,9 @@ function App() {
         {/* Main title for screen readers */}
         <h1 className="sr-only">Wordle6 - A 6-letter word guessing game</h1>
         
+        {/* Network status indicator */}
+        <NetworkStatus />
+        
         {/* Game status announcer for screen readers */}
         <GameStatusAnnouncer 
           gameStatus={gameStatus} 
@@ -260,6 +265,9 @@ function App() {
             />
           </>
         )}
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
       </div>
     </ThemeProvider>
   );

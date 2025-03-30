@@ -25,10 +25,16 @@
   <meta property="twitter:description" content="Challenge your vocabulary with Wordle6, a daily word puzzle where you have 6 attempts to guess a 6-letter word. Play for free on any device!">
   <meta property="twitter:image" content="https://your-wordle6-domain.com/wordle6-preview.jpg">
   
+  <!-- PWA Support -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wordle6">
+  
   <!-- Theme Color for browsers -->
   <meta name="theme-color" content="#6aaa64">
   
-  <!-- Favicon -->
+  <!-- Favicon and App Icons -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -47,5 +53,20 @@
   
   <div id="root"></div>
   <script type="module" src="/src/client/index.tsx"></script>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
