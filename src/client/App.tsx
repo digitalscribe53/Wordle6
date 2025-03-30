@@ -1,5 +1,3 @@
-// App.tsx - Updated to use client-side word handling
-
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard.js';
@@ -18,9 +16,6 @@ import { ThemeProvider } from './context/ThemeContext.js';
 const WORD_LENGTH = 6;  // For Wordle6, we use 6-letter words
 const MAX_GUESSES = 6;  // Players get 6 attempts
 
-// Fallback words in case word service fails
-const FALLBACK_WORDS = ["PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM", "JACKET"];
-
 function App() {
   // Game state
   const [targetWord, setTargetWord] = useState<string>('');
@@ -35,33 +30,28 @@ function App() {
   const [stats, setStats] = useState<GameStats>(loadStats());
   const [showStatsModal, setShowStatsModal] = useState<boolean>(false);
 
-  // Fetch a random word using the client-side word service
+  // Fetch a random word from the client-side service
   const fetchWord = useCallback(async () => {
     try {
       setIsLoading(true);
       setError('');
       
+      // Add a small delay to simulate loading
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       try {
         // Use client-side word service instead of API
         const word = await getRandomWord();
-        if (word) {
-          setTargetWord(word.toUpperCase());
-        } else {
-          // Use fallback if no word returned
-          const fallbackWord = FALLBACK_WORDS[Math.floor(Math.random() * FALLBACK_WORDS.length)];
-          setTargetWord(fallbackWord);
-          console.warn('Using fallback word');
-        }
+        setTargetWord(word.toUpperCase());
       } catch (error) {
         console.error('Error getting random word:', error);
-        // Fallback to a default word
-        const fallbackWord = FALLBACK_WORDS[Math.floor(Math.random() * FALLBACK_WORDS.length)];
-        setTargetWord(fallbackWord);
+        // Use a fallback word
+        setTargetWord('PUZZLE');
       }
     } catch (error) {
-      console.error('Error in fetchWord:', error);
-      setError('Failed to load a word. Using default word instead.');
-      setTargetWord('PUZZLE'); // Ensure we always have a word
+      console.error('Error fetching word:', error);
+      setError('Failed to load a word. Using default word.');
+      setTargetWord('PUZZLE');
     } finally {
       setIsLoading(false);
     }
@@ -149,13 +139,14 @@ function App() {
         setShake(true);
         setTimeout(() => {
           setShake(false);
-          setCurrentGuess(''); // Clear invalid guess after animation
+          // Clear invalid guess after animation
+          setCurrentGuess('');
         }, 1000);
         return;
       }
     } catch (error) {
       console.error('Error validating word:', error);
-      // If validation fails, we'll still accept the word for now
+      // If validation fails, accept the word anyway
     }
 
     // Add the guess to the list
