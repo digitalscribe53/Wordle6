@@ -12,7 +12,11 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',    // Output directory for production build
-    emptyOutDir: true  // Clear the output directory before building
+    emptyOutDir: true,  // Clear the output directory before building
+    rollupOptions: {
+        // Explicitly exclude server files from the build
+        external: [/^src\/server\/.*/]
+      }
   },
   server: {
     // Proxy configuration for development only

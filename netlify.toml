@@ -1,6 +1,7 @@
 [build]
   command = "npm run build:netlify"
   publish = "dist"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./src/client/"
 
 # Handle SPA routing by redirecting all paths to index.html
 [[redirects]]
