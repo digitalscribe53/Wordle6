@@ -55,7 +55,6 @@ self.addEventListener('fetch', (event) => {
   
   // Handle API requests separately
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(handleApiRequest(event.request));
     return;
   }
   
@@ -95,60 +94,3 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Handle API requests with network-first strategy
-async function handleApiRequest(request) {
-  // For API requests, try network first, then fall back to cache
-  try {
-    // Try to get a fresh response from the network
-    const networkResponse = await fetch(request);
-    
-    // If successful, clone the response to store in cache
-    const clonedResponse = networkResponse.clone();
-    
-    // Store in the API cache
-    const cache = await caches.open(API_CACHE_NAME);
-    cache.put(request, clonedResponse);
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('[Service Worker] API fetch failed, trying cache:', error);
-    
-    // If network request fails, try to get from cache
-    const cachedResponse = await caches.match(request);
-    
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // If no cached version exists, return a custom offline response
-    // For API requests, return a default response
-    if (request.url.includes('/api/word')) {
-      // Provide a fallback word for offline play
-      return new Response(
-        JSON.stringify({ word: "OFFLINE" }),
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-    
-    // For validation, assume valid for offline play
-    if (request.url.includes('/api/validate')) {
-      return new Response(
-        JSON.stringify({ valid: true }),
-        {
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-    
-    // For other API endpoints
-    return new Response(
-      JSON.stringify({ error: 'You are offline' }),
-      {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
-  }
-}

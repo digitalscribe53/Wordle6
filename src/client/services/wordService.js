@@ -1,11 +1,64 @@
 // src/client/services/wordService.js
-import wordList from '/words.json'; 
+// A client-side word service with embedded fallback words
 
-export const getRandomWord = () => {
-  const randomIndex = Math.floor(Math.random() * wordList.length);
-  return wordList[randomIndex];
-};
-
-export const validateWord = (word) => {
-  return wordList.includes(word.toUpperCase());
-};
+// Embedded fallback word list in case words.json can't be loaded
+const FALLBACK_WORDS = [
+    "PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM", 
+    "JACKET", "WALNUT", "FLIGHT", "COPPER", "DINNER",
+    "TICKET", "SINGER", "JUNGLE", "SHIELD", "KNIGHT",
+    "TEMPLE", "MARBLE", "FLOWER", "SUNSET", "PLANET"
+  ];
+  
+  // Cache the word list once it's loaded
+  let wordList = null;
+  
+  /**
+   * Loads the word list from the JSON file or uses fallback
+   */
+  export const loadWordList = async () => {
+    if (wordList) return wordList;
+    
+    try {
+      // Try to fetch the word list from the server
+      const response = await fetch('/words.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load word list: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      // Check if we got a valid array of words
+      if (Array.isArray(data) && data.length > 0) {
+        wordList = data;
+        console.log(`Loaded ${wordList.length} words from JSON file`);
+        return wordList;
+      } else {
+        throw new Error('Invalid word list format');
+      }
+    } catch (error) {
+      console.error('Error loading word list:', error);
+      console.log('Using fallback word list');
+      // Use the fallback list
+      wordList = FALLBACK_WORDS;
+      return wordList;
+    }
+  };
+  
+  /**
+   * Get a random word from the list
+   */
+  export const getRandomWord = async () => {
+    const words = await loadWordList();
+    const randomIndex = Math.floor(Math.random() * words.length);
+    return words[randomIndex];
+  };
+  
+  /**
+   * Check if a word is valid (exists in our word list)
+   */
+  export const isValidWord = async (word) => {
+    const words = await loadWordList();
+    return words.includes(word.trim().toUpperCase());
+  };
+  
+  // Pre-load the word list when the module is imported
+  loadWordList().catch(error => console.error('Failed to pre-load word list:', error));
