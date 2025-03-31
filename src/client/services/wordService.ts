@@ -1,21 +1,7 @@
 // src/client/services/wordService.ts
 
-// wordService.js
-const WORDS = ["PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM"];
-
-export const getRandomWord = async () => {
-  return WORDS[Math.floor(Math.random() * WORDS.length)];
-};
-
-export const isValidWord = async (word: string) => {
-  return true;  // Accept all words for now
-};
-
-
-console.log("wordService loaded", typeof getRandomWord, typeof isValidWord);
-
 // Embedded fallback word list in case words.json can't be loaded
-/*const FALLBACK_WORDS: string[] = [
+const FALLBACK_WORDS: string[] = [
     "PUZZLE", "OXYGEN", "ZOMBIE", "QUARTZ", "RHYTHM", 
     "JACKET", "WALNUT", "FLIGHT", "COPPER", "DINNER",
     "TICKET", "SINGER", "JUNGLE", "SHIELD", "KNIGHT",
@@ -24,10 +10,12 @@ console.log("wordService loaded", typeof getRandomWord, typeof isValidWord);
   
   // Cache the word list once it's loaded
   let wordList: string[] | null = null;
+  // Track the last word to avoid repeats
+  let lastWord: string | null = null;
   
-  
-   // Loads the word list from the JSON file or uses fallback
-   
+  /**
+   * Loads the word list from the JSON file or uses fallback
+   */
   export const loadWordList = async (): Promise<string[]> => {
     if (wordList) return wordList;
     
@@ -56,22 +44,36 @@ console.log("wordService loaded", typeof getRandomWord, typeof isValidWord);
     }
   };
   
-  
-   // Get a random word from the list
-   
+  /**
+   * Get a random word from the list
+   */
   export const getRandomWord = async (): Promise<string> => {
     const words = await loadWordList();
-    const randomIndex = Math.floor(Math.random() * words.length);
-    return words[randomIndex];
+    
+    // Make sure we don't get the same word twice in a row
+    let word;
+    let attempts = 0;
+    do {
+      const randomIndex = Math.floor(Math.random() * words.length);
+      word = words[randomIndex];
+      attempts++;
+      // If we've tried 5 times and can't get a different word, just use what we have
+      if (attempts > 5) break;
+    } while (word === lastWord && words.length > 1);
+    
+    // Remember this word for next time
+    lastWord = word;
+    console.log("Selected word:", word);
+    return word;
   };
   
-  
-   // Check if a word is valid (exists in our word list)
-   
+  /**
+   * Check if a word is valid (exists in our word list)
+   */
   export const isValidWord = async (word: string): Promise<boolean> => {
     const words = await loadWordList();
     return words.includes(word.trim().toUpperCase());
   };
   
   // Pre-load the word list when the module is imported
-  loadWordList().catch(error => console.error('Failed to pre-load word list:', error));*/
+  loadWordList().catch(error => console.error('Failed to pre-load word list:', error));
