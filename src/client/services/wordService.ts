@@ -10,6 +10,8 @@ const FALLBACK_WORDS: string[] = [
   
   // Cache the word list once it's loaded
   let wordList: string[] | null = null;
+  // Track if we're using fallback
+  let usingFallback: boolean = false;
   // Track the last word to avoid repeats
   let lastWord: string | null = null;
   
@@ -17,29 +19,38 @@ const FALLBACK_WORDS: string[] = [
    * Loads the word list from the JSON file or uses fallback
    */
   export const loadWordList = async (): Promise<string[]> => {
-    if (wordList) return wordList;
+    // If we already have the word list and it's NOT the fallback, return it
+    if (wordList && !usingFallback) return wordList;
     
     try {
-      // Try to fetch the word list from the server
+      // Always try to fetch the file
+      console.log("Attempting to load words.json...");
       const response = await fetch('/words.json');
+      
       if (!response.ok) {
+        console.error(`Failed to load word list: Status ${response.status}`);
         throw new Error(`Failed to load word list: ${response.status}`);
       }
+      
+      console.log("Response received, parsing JSON...");
       const data = await response.json();
       
       // Check if we got a valid array of words
       if (Array.isArray(data) && data.length > 0) {
         wordList = data;
-        console.log(`Loaded ${wordList.length} words from JSON file`);
+        usingFallback = false;
+        console.log(`Successfully loaded ${wordList.length} words from JSON file`);
         return wordList;
       } else {
+        console.error("Invalid word list format", data);
         throw new Error('Invalid word list format');
       }
     } catch (error) {
       console.error('Error loading word list:', error);
-      console.log('Using fallback word list');
+      console.log('Using fallback word list with', FALLBACK_WORDS.length, 'words');
       // Use the fallback list
       wordList = FALLBACK_WORDS;
+      usingFallback = true;
       return wordList;
     }
   };
@@ -63,7 +74,7 @@ const FALLBACK_WORDS: string[] = [
     
     // Remember this word for next time
     lastWord = word;
-    console.log("Selected word:", word);
+    console.log("Selected word:", word, "Using fallback list:", usingFallback);
     return word;
   };
   
