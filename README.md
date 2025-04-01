@@ -1,10 +1,10 @@
-## Wordle6
+# Wordle6
 A 6-letter word guessing game inspired by the popular Wordle puzzle game. Wordle6 offers a more challenging version with 6-letter words instead of the traditional 5-letter format.
 
-# Live Demo
+## Live Demo
 [Play Wordle6 online](https://wordle6-app.netlify.app)
 
-# Technologies Used
+## Technologies Used
 Frontend 
     - React: The core UI library used to build the game's component-based interface
     - TypeScript: Provides static typing for more robust code and better developer experience
@@ -22,7 +22,7 @@ Deployment
     - Netlify: Platform used for hosting the static frontend build
     - Client-side Word Processing: Migrated server functionality to the client for static hosting
 
-# Implementation Details
+## Implementation Details
     - React + TypeScript: The game is built using functional React components with TypeScript for type safety.   Components are organized by feature, with separation of UI elements and game logic.
     - Hono Framework: Used during development to create a lightweight API server that provides:
       Random word selection from a dictionary; Word validation against the dictionary
@@ -41,7 +41,7 @@ Deployment
       Game state announcements for screen readers  
     - Dark Mode: A theme toggle allows switching between light and dark modes, with preferences saved in localStorage.
 
-# Future Enhancements
+## Future Enhancements
     - Daily challenge mode
     - Shareable results
     - User accounts for cross-device progress    
